@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>JobForm</class>
+ <widget class="QWidget" name="JobForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>900</width><height>600</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Журнал ремонтов</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+
+   <item>
+    <layout class="QHBoxLayout" name="topBar">
+     <item><widget class="QLabel" name="filter_label"><property name="text"><string>Фильтр по статусу:</string></property></widget></item>
+     <item><widget class="QComboBox" name="status_filter">
+       <item><property name="text"><string>Все</string></property></item>
+       <item><property name="text"><string>В процессе</string></property></item>
+       <item><property name="text"><string>Завершено</string></property></item>
+     </widget></item>
+     <item><spacer name="spacer"><property name="orientation"><enum>Qt.Horizontal</enum></property></spacer></item>
+     <item><widget class="QPushButton" name="add_btn"><property name="text"><string>Добавить</string></property></widget></item>
+     <item><widget class="QPushButton" name="edit_btn"><property name="text"><string>Изменить</string></property></widget></item>
+     <item><widget class="QPushButton" name="delete_btn"><property name="text"><string>Удалить</string></property></widget></item>
+    </layout>
+   </item>
+
+   <item><widget class="QTableView" name="jobs_table"/></item>
+
+   <item>
+    <layout class="QHBoxLayout" name="bottomBar">
+     <item><widget class="QPushButton" name="report_btn"><property name="text"><string>Создать отчет</string></property></widget></item>
+     <item><spacer name="hSpacer"><property name="orientation"><enum>Qt.Horizontal</enum></property></spacer></item>
+     <item><widget class="QPushButton" name="close_btn"><property name="text"><string>Закрыть</string></property></widget></item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

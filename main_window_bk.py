@@ -47,6 +47,7 @@ class MainWindow(QMainWindow):
         self.ui.theme_combo.currentIndexChanged.connect(self.change_theme)
 
         self.load_from_db()
+        self.update_stats()
 
     def change_theme(self):
         theme = self.ui.theme_combo.currentText()
@@ -114,12 +115,14 @@ class MainWindow(QMainWindow):
         for q in range(7):
             if not self.ui.parts_table.item(r, q):
                 self.ui.parts_table.setItem(r, q, QTableWidgetItem(""))
+        self.update_stats()
 
     def delete_p(self):
         r = self.ui.parts_table.currentRow()
         if r != -1:
             self.ui.parts_table.removeRow(r)
-
+        self.update_stats()
+        
     def add_photo(self):
         r = self.ui.parts_table.currentRow()
         if r == -1:
@@ -202,6 +205,33 @@ class MainWindow(QMainWindow):
             "О программе",
             "Inventory & Service Manager\nВерсия 1.0"
         )
+
+    def update_stats(self):
+        total_items = 0
+        total_cost = 0.0
+
+        rows = self.ui.parts_table.rowCount()
+
+        for r in range(rows):
+            qty_item = self.ui.parts_table.item(r, 5)
+            price_item = self.ui.parts_table.item(r, 4)
+
+            if qty_item and price_item:
+                try:
+                    qty = int(qty_item.text())
+                    price = float(price_item.text())
+                except ValueError:
+                    continue
+
+                total_items += qty
+                total_cost += qty * price
+
+        avg_price = (total_cost / total_items) if total_items > 0 else 0
+
+        self.ui.label_total_parts.setText(str(total_items))
+        self.ui.label_total_value.setText(f"{total_cost:.2f}")
+        self.ui.label_avg_price.setText(f"{avg_price:.2f}")
+
 
 
 if __name__ == "__main__":

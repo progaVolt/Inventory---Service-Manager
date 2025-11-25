@@ -44,8 +44,10 @@ class Ui_RegisterDialog(object):
 
     def retranslateUi(self, RegisterDialog):
         _translate = QtCore.QCoreApplication.translate
-        RegisterDialog.setWindowTitle(_translate("RegisterDialog", "Регистрация"))
+        RegisterDialog.setWindowTitle(
+            _translate("RegisterDialog", "Регистрация"))
         self.login_label.setText(_translate("RegisterDialog", "Логин:"))
         self.password_label.setText(_translate("RegisterDialog", "Пароль:"))
-        self.register_pushButton.setText(_translate("RegisterDialog", "Создать"))
+        self.register_pushButton.setText(
+            _translate("RegisterDialog", "Создать"))
         self.cancel_pushButton.setText(_translate("RegisterDialog", "Отмена"))

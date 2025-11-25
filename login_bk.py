@@ -1,5 +1,6 @@
 import sys
 import sqlite3
+import bcrypt
 from PyQt6 import QtWidgets
 from ui.login_form import Ui_Dialog
 from ui.register_form import Ui_RegisterDialog
@@ -13,25 +14,28 @@ class RegisterWindow(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.setWindowTitle("Регистрация")
 
-        self.ui.pasw_lineEdit.setEchoMode(
-            QtWidgets.QLineEdit.EchoMode.pasw)
+        self.ui.password_lineEdit.setEchoMode(
+            QtWidgets.QLineEdit.EchoMode.Password)
+
         self.ui.register_pushButton.clicked.connect(self.register_user)
         self.ui.cancel_pushButton.clicked.connect(self.close)
 
     def register_user(self):
         login = self.ui.login_lineEdit.text().strip()
-        pasw = self.ui.pasw_lineEdit.text().strip()
+        pasw = self.ui.password_lineEdit.text().strip()
 
         if not login or not pasw:
             self.ui.status_label.setText("Заполните все поля!")
             return
+
+        hashed = bcrypt.hashpw(pasw.encode("utf-8"), bcrypt.gensalt())
 
         conn = sqlite3.connect("service.db")
         cur = conn.cursor()
 
         try:
             cur.execute(
-                "INSERT INTO users (login, pasw) VALUES (?, ?)", (login, pasw))
+                "INSERT INTO users (login, pasw) VALUES (?, ?)", (login, hashed))
             conn.commit()
             self.ui.status_label.setText("Регистрация успешна!")
         except sqlite3.IntegrityError:
@@ -47,7 +51,7 @@ class LoginWindow(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.setWindowTitle("Авторизация")
 
-        self.ui.pasw_lineEdit.setEchoMode(QtWidgets.QLineEdit.EchoMode.pasw)
+        self.ui.password_lineEdit.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.ui.status_label.setVisible(False)
 
         self.ui.enter_pushButton.clicked.connect(self.login)
@@ -56,7 +60,7 @@ class LoginWindow(QtWidgets.QDialog):
 
     def login(self):
         login = str(self.ui.login_lineEdit.text().strip())
-        pasw = str(self.ui.pasw_lineEdit.text().strip())
+        pasw = str(self.ui.password_lineEdit.text().strip())
 
         if self.check_user_in_db(login, pasw):
             self.ui.status_label.setVisible(False)
@@ -69,10 +73,16 @@ class LoginWindow(QtWidgets.QDialog):
             conn = sqlite3.connect("service.db")
             cur = conn.cursor()
             cur.execute(
-                "SELECT * FROM users WHERE login=? AND pasw=?", (login, pasw))
-            user = cur.fetchone()
+                "SELECT pasw FROM users WHERE login=?", (login,))
+            row = cur.fetchone()
             conn.close()
-            return user is not None
+
+            if row is None:
+                return False
+
+            stored_hash = row[0]
+
+            return bcrypt.checkpw(pasw.encode("utf-8"), stored_hash)
         except Exception as e:
             print("Ошибка при проверке пользователя:", e)
             return False
@@ -91,7 +101,7 @@ if __name__ == "__main__":
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             login TEXT UNIQUE,
-            pasw TEXT
+            pasw BLOB
         )
     """)
     conn.commit()

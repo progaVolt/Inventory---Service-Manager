@@ -1,7 +1,7 @@
 import sys
 import os
+from PyQt6 import QtCore
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QTableWidgetItem
-from PyQt6.QtCore import Qt
 from ui.main_window import Ui_MainWindow
 from db_bk import SessionLocal, init_db
 from models_bk import Part
@@ -14,11 +14,20 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("Inventory & Service Manager")
+
         init_db()
         self.session = SessionLocal()
 
-        self.ui.menuList.currentrChanged.connect(
-            self.ui.stackedWidget.setCurrentIndex)
+        self.settings_path = "settings.ini"
+        self.settings = QtCore.QSettings(
+            self.settings_path, QtCore.QSettings.Format.IniFormat)
+
+        self.load_settings()
+        self.apply_theme()
+
+        self.ui.menuList.currentRowChanged.connect(
+            self.ui.stackedWidget.setCurrentIndex
+        )
 
         self.ui.add_btn.clicked.connect(self.add_part)
         self.ui.delete_btn.clicked.connect(self.delete_p)
@@ -30,23 +39,84 @@ class MainWindow(QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.actionAbout.triggered.connect(self.about_app)
 
+        self.ui.theme_combo.currentIndexChanged.connect(self.change_theme)
+
         self.load_from_db()
 
+    def change_theme(self):
+        theme = self.ui.theme_combo.currentText()
+        if theme == "Светлая":
+            self.setStyleSheet("""
+                QMainWindow { background-color: #f2f2f2; color: #fff; }
+                QLabel, QLineEdit, QTableWidget, QPushButton, QComboBox {
+                    background-color: #b0b3b5; color: #fff; border: 1px solid #555;
+                }
+                QTableWidget::item:selected { background-color: #a09898; }
+                QPushButton:hover { background-color: #9b8c8c; }
+            """)
+        else:
+            self.setStyleSheet("""
+                QMainWindow { background-color: #2b2b2b; color: #fff; }
+                QLabel, QLineEdit, QTableWidget, QPushButton, QComboBox {
+                    background-color: #3c3f41; color: #fff; border: 1px solid #555;
+                }
+                QTableWidget::item:selected { background-color: #5a5a5a; }
+                QPushButton:hover { background-color: #505050; }
+            """)
+
+    def load_settings(self):
+        theme = self.settings.value("theme", "Светлая")
+        index = self.ui.theme_combo.findText(theme)
+        if index != -1:
+            self.ui.theme_combo.setCurrentIndex(index)
+
+    def apply_theme(self):
+        theme = self.ui.theme_combo.currentText()
+
+        if theme == "Тёмная":
+            self.setStyleSheet("""
+                QWidget {
+                    background-color: #2b2b2b;
+                    color: #e0e0e0;
+                    font-size: 11pt;
+                }
+                QLineEdit, QComboBox, QTableWidget, QTextEdit {
+                    background: #3a3a3a;
+                    color: #e0e0e0;
+                    border: 1px solid #555;
+                }
+                QPushButton {
+                    background-color: #444;
+                    color: #fff;
+                    border: 1px solid #666;
+                    padding: 4px;
+                }
+                QPushButton:hover {
+                    background-color: #555;
+                }
+                QHeaderView::section {
+                    background-color: #444;
+                    color: #fff;
+                }
+            """)
+        else:
+            self.setStyleSheet("")  # default Qt theme
+
     def add_part(self):
-        r = self.ui.s_table.rCount()
-        self.ui.s_table.insertr(r)
+        r = self.ui.parts_table.rowCount()
+        self.ui.parts_table.insertRow(r)
 
         for q in range(7):
-            if not self.ui.s_table.item(r, q):
-                self.ui.s_table.setItem(r, q, QTableWidgetItem(""))
+            if not self.ui.parts_table.item(r, q):
+                self.ui.parts_table.setItem(r, q, QTableWidgetItem(""))
 
     def delete_p(self):
-        r = self.ui.s_table.currentr()
+        r = self.ui.parts_table.currentRow()
         if r != -1:
-            self.ui.s_table.remover(r)
+            self.ui.parts_table.removeRow(r)
 
     def add_photo(self):
-        r = self.ui.s_table.currentr()
+        r = self.ui.parts_table.currentRow()
         if r == -1:
             QMessageBox.warning(self, "Ошибка", "Сначала выберите строку.")
             return
@@ -56,50 +126,47 @@ class MainWindow(QMainWindow):
         )
 
         if file:
-            self.ui.s_table.setItem(r, 6, QTableWidgetItem(file))
+            self.ui.parts_table.setItem(r, 6, QTableWidgetItem(file))
 
     def save_to_db(self):
         self.session.query(Part).delete()
 
-        for i in range(self.ui.s_table.rCount()):
-            r_i = [self.ui.s_table.item(i, c) for c in range(7)]
+        for i in range(self.ui.parts_table.rowCount()):
+            row = [self.ui.parts_table.item(i, c) for c in range(7)]
 
-            def txt(item):
-                return item.text() if item else ""
+            def txt(item): return item.text() if item else ""
 
             part = Part(
-                id=int(txt(r_i[0])) if txt(
-                    r_i[0]).isdigit() else None,
-                code=txt(r_i[1]),
-                name=txt(r_i[2]),
-                description=txt(r_i[3]),
-                price=float(txt(r_i[4])) if txt(r_i[4]) else 0.0,
-                quantity=int(txt(r_i[5])) if txt(r_i[5]) else 0,
-                photo=txt(r_i[6]),
+                id=int(txt(row[0])) if txt(row[0]).isdigit() else None,
+                code=txt(row[1]),
+                name=txt(row[2]),
+                description=txt(row[3]),
+                price=float(txt(row[4])) if txt(row[4]) else 0.0,
+                quantity=int(txt(row[5])) if txt(row[5]) else 0,
+                photo=txt(row[6]),
             )
 
             self.session.add(part)
 
         self.session.commit()
-        QMessageBox.information(self, "Готово", "Данные сохранены в базу.")
+        QMessageBox.information(self, "Готово", "Данные сохранены.")
 
     def load_from_db(self):
-        self.ui.s_table.setrCount(0)
+        self.ui.parts_table.setRowCount(0)
         s = self.session.query(Part).all()
 
         for p in s:
-            r = self.ui.s_table.rCount()
-            self.ui.s_table.insertr(r)
+            r = self.ui.parts_table.rowCount()
+            self.ui.parts_table.insertRow(r)
 
-            self.ui.s_table.setItem(r, 0, QTableWidgetItem(str(p.id)))
-            self.ui.s_table.setItem(r, 1, QTableWidgetItem(p.code))
-            self.ui.s_table.setItem(r, 2, QTableWidgetItem(p.name))
-            self.ui.s_table.setItem(
-                r, 3, QTableWidgetItem(p.description))
-            self.ui.s_table.setItem(r, 4, QTableWidgetItem(str(p.price)))
-            self.ui.s_table.setItem(
+            self.ui.parts_table.setItem(r, 0, QTableWidgetItem(str(p.id)))
+            self.ui.parts_table.setItem(r, 1, QTableWidgetItem(p.code))
+            self.ui.parts_table.setItem(r, 2, QTableWidgetItem(p.name))
+            self.ui.parts_table.setItem(r, 3, QTableWidgetItem(p.description))
+            self.ui.parts_table.setItem(r, 4, QTableWidgetItem(str(p.price)))
+            self.ui.parts_table.setItem(
                 r, 5, QTableWidgetItem(str(p.quantity)))
-            self.ui.s_table.setItem(r, 6, QTableWidgetItem(p.photo))
+            self.ui.parts_table.setItem(r, 6, QTableWidgetItem(p.photo))
 
     def export_csv(self):
         path, _ = QFileDialog.getSaveFileName(
@@ -109,18 +176,18 @@ class MainWindow(QMainWindow):
             return
 
         with open(path, "w", newline="", encoding="utf-8") as f:
-            wr = csv.wr(f)
-            wr.wr(["ID", "Артикул", "Название", "Описание",
-                   "Цена", "Количество", "Фото"])
+            wr = csv.writer(f)
+            wr.writerow(["ID", "Артикул", "Название", "Описание",
+                         "Цена", "Количество", "Фото"])
 
-            for i in range(self.ui.s_table.rCount()):
-                r = [
-                    self.ui.s_table.item(i, j).text()
-                    if self.ui.s_table.item(i, j)
+            for i in range(self.ui.parts_table.rowCount()):
+                row = [
+                    self.ui.parts_table.item(i, j).text()
+                    if self.ui.parts_table.item(i, j)
                     else ""
                     for j in range(7)
                 ]
-                wr.wr(r)
+                wr.writerow(row)
 
         QMessageBox.information(self, "OK", "Экспорт завершён.")
 

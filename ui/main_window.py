@@ -30,15 +30,18 @@ class Ui_MainWindow(object):
         self.logo_label = QtWidgets.QLabel(parent=self.leftMenu)
         self.logo_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.logo_label.setWordWrap(False)
-        self.logo_label.setStyleSheet("font-size:16pt; font-weight:bold; color:#333;")
+        self.logo_label.setStyleSheet(
+            "font-size:16pt; font-weight:bold; color:#333;")
         self.logo_label.setMinimumHeight(60)
         self.logo_label.setObjectName("logo_label")
         self.verticalLayout_menu.addWidget(self.logo_label)
         self.menuList = QtWidgets.QListWidget(parent=self.leftMenu)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.menuList.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.menuList.sizePolicy().hasHeightForWidth())
         self.menuList.setSizePolicy(sizePolicy)
         self.menuList.setAlternatingRowColors(False)
         self.menuList.setObjectName("menuList")
@@ -60,11 +63,14 @@ class Ui_MainWindow(object):
         self.ver_label.setObjectName("ver_label")
         self.verticalLayout_menu.addWidget(self.ver_label)
         self.horizontalLayout.addWidget(self.leftMenu)
-        self.stackedWidget = QtWidgets.QStackedWidget(parent=self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.stackedWidget = QtWidgets.QStackedWidget(
+            parent=self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.stackedWidget.sizePolicy().hasHeightForWidth())
         self.stackedWidget.setSizePolicy(sizePolicy)
         self.stackedWidget.setObjectName("stackedWidget")
         self.page_home = QtWidgets.QWidget()
@@ -85,8 +91,10 @@ class Ui_MainWindow(object):
         self.vbox_total_parts = QtWidgets.QVBoxLayout(self.box_total_parts)
         self.vbox_total_parts.setObjectName("vbox_total_parts")
         self.label_total_parts = QtWidgets.QLabel(parent=self.box_total_parts)
-        self.label_total_parts.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label_total_parts.setStyleSheet("font-size:18pt; font-weight:bold;")
+        self.label_total_parts.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_total_parts.setStyleSheet(
+            "font-size:18pt; font-weight:bold;")
         self.label_total_parts.setObjectName("label_total_parts")
         self.vbox_total_parts.addWidget(self.label_total_parts)
         self.home_cards_layout.addWidget(self.box_total_parts)
@@ -95,8 +103,10 @@ class Ui_MainWindow(object):
         self.vbox_total_value = QtWidgets.QVBoxLayout(self.box_total_value)
         self.vbox_total_value.setObjectName("vbox_total_value")
         self.label_total_value = QtWidgets.QLabel(parent=self.box_total_value)
-        self.label_total_value.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.label_total_value.setStyleSheet("font-size:18pt; font-weight:bold;")
+        self.label_total_value.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_total_value.setStyleSheet(
+            "font-size:18pt; font-weight:bold;")
         self.label_total_value.setObjectName("label_total_value")
         self.vbox_total_value.addWidget(self.label_total_value)
         self.home_cards_layout.addWidget(self.box_total_value)
@@ -142,10 +152,12 @@ class Ui_MainWindow(object):
         self.top_toolbar.addWidget(self.export_btn)
         self.verticalLayout_parts.addLayout(self.top_toolbar)
         self.parts_table = QtWidgets.QTableWidget(parent=self.page_parts)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.parts_table.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.parts_table.sizePolicy().hasHeightForWidth())
         self.parts_table.setSizePolicy(sizePolicy)
         self.parts_table.setColumnCount(7)
         self.parts_table.setRowCount(0)
@@ -236,20 +248,25 @@ class Ui_MainWindow(object):
         self.formLayout_settings.setObjectName("formLayout_settings")
         self.username_label = QtWidgets.QLabel(parent=self.page_settings)
         self.username_label.setObjectName("username_label")
-        self.formLayout_settings.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.username_label)
+        self.formLayout_settings.setWidget(
+            0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.username_label)
         self.username_edit = QtWidgets.QLineEdit(parent=self.page_settings)
         self.username_edit.setObjectName("username_edit")
-        self.formLayout_settings.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.username_edit)
+        self.formLayout_settings.setWidget(
+            0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.username_edit)
         self.theme_label = QtWidgets.QLabel(parent=self.page_settings)
         self.theme_label.setObjectName("theme_label")
-        self.formLayout_settings.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.theme_label)
+        self.formLayout_settings.setWidget(
+            1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.theme_label)
         self.theme_combo = QtWidgets.QComboBox(parent=self.page_settings)
         self.theme_combo.setObjectName("theme_combo")
         self.theme_combo.addItem("")
         self.theme_combo.addItem("")
-        self.formLayout_settings.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.theme_combo)
+        self.formLayout_settings.setWidget(
+            1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.theme_combo)
         spacerItem5 = QtWidgets.QSpacerItem(0, 3)
-        self.formLayout_settings.setItem(2, QtWidgets.QFormLayout.ItemRole.LabelRole, spacerItem5)
+        self.formLayout_settings.setItem(
+            2, QtWidgets.QFormLayout.ItemRole.LabelRole, spacerItem5)
         self.stackedWidget.addWidget(self.page_settings)
         self.horizontalLayout.addWidget(self.stackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -281,8 +298,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Inventory & Service Manager — Главное окно"))
-        self.logo_label.setText(_translate("MainWindow", "Inventory & Service Manager"))
+        MainWindow.setWindowTitle(_translate(
+            "MainWindow", "Inventory & Service Manager — Главное окно"))
+        self.logo_label.setText(_translate(
+            "MainWindow", "Inventory & Service Manager"))
         __sortingEnabled = self.menuList.isSortingEnabled()
         self.menuList.setSortingEnabled(False)
         item = self.menuList.item(0)
@@ -295,15 +314,19 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "⚙️ Настройки"))
         self.menuList.setSortingEnabled(__sortingEnabled)
         self.ver_label.setText(_translate("MainWindow", "v1.0 • Local"))
-        self.welcome_label.setText(_translate("MainWindow", "Добро пожаловать в систему!"))
-        self.box_total_parts.setTitle(_translate("MainWindow", "Всего позиций"))
+        self.welcome_label.setText(_translate(
+            "MainWindow", "Добро пожаловать в систему!"))
+        self.box_total_parts.setTitle(
+            _translate("MainWindow", "Всего позиций"))
         self.label_total_parts.setText(_translate("MainWindow", "0"))
-        self.box_total_value.setTitle(_translate("MainWindow", "Суммарная стоимость"))
+        self.box_total_value.setTitle(_translate(
+            "MainWindow", "Суммарная стоимость"))
         self.label_total_value.setText(_translate("MainWindow", "0.00"))
         self.box_avg_price.setTitle(_translate("MainWindow", "Средняя цена"))
         self.label_avg_price.setText(_translate("MainWindow", "0.00"))
         self.lbl_search.setText(_translate("MainWindow", "Поиск:"))
-        self.search_lineEdit.setPlaceholderText(_translate("MainWindow", "Введите артикул или название..."))
+        self.search_lineEdit.setPlaceholderText(_translate(
+            "MainWindow", "Введите артикул или название..."))
         self.btn_search.setText(_translate("MainWindow", "🔍"))
         self.import_btn.setText(_translate("MainWindow", "Импорт"))
         self.export_btn.setText(_translate("MainWindow", "Экспорт"))
@@ -314,13 +337,16 @@ class Ui_MainWindow(object):
         self.photo_btn.setText(_translate("MainWindow", "📷 Добавить фото"))
         self.save_btn.setText(_translate("MainWindow", "💾 Сохранить"))
         self.load_btn.setText(_translate("MainWindow", "📂 Открыть"))
-        self.stats_title.setText(_translate("MainWindow", "📊 Статистика по деталям"))
+        self.stats_title.setText(_translate(
+            "MainWindow", "📊 Статистика по деталям"))
         self.label_choose.setText(_translate("MainWindow", "Тип графика:"))
         self.stats_combo.setItemText(0, _translate("MainWindow", "Количество"))
         self.stats_combo.setItemText(1, _translate("MainWindow", "Цена"))
-        self.stats_combo.setItemText(2, _translate("MainWindow", "Стоимость (Цена×Количество)"))
+        self.stats_combo.setItemText(2, _translate(
+            "MainWindow", "Стоимость (Цена×Количество)"))
         self.stats_button.setText(_translate("MainWindow", "Построить график"))
-        self.stats_info.setText(_translate("MainWindow", "Здесь появятся суммарные показатели"))
+        self.stats_info.setText(_translate(
+            "MainWindow", "Здесь появятся суммарные показатели"))
         self.username_label.setText(_translate("MainWindow", "Пользователь:"))
         self.theme_label.setText(_translate("MainWindow", "Тема:"))
         self.theme_combo.setItemText(0, _translate("MainWindow", "Светлая"))

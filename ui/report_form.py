@@ -43,7 +43,8 @@ class Ui_ReportForm(object):
         self.export_btn = QtWidgets.QPushButton(parent=ReportForm)
         self.export_btn.setObjectName("export_btn")
         self.bottomBar.addWidget(self.export_btn)
-        spacerItem = QtWidgets.QSpacerItem(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.bottomBar.addItem(spacerItem)
         self.close_btn = QtWidgets.QPushButton(parent=ReportForm)
         self.close_btn.setObjectName("close_btn")

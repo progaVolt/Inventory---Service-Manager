@@ -13,6 +13,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.parts_table.setHorizontalHeaderLabels([
+            "ID", "Артикул", "Название", "Описание",
+            "Цена", "Количество", "Фото"
+        ])
+
         self.setWindowTitle("Inventory & Service Manager")
 
         init_db()

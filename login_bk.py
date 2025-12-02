@@ -51,7 +51,8 @@ class LoginWindow(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.setWindowTitle("Авторизация")
 
-        self.ui.password_lineEdit.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
+        self.ui.password_lineEdit.setEchoMode(
+            QtWidgets.QLineEdit.EchoMode.Password)
         self.ui.status_label.setVisible(False)
 
         self.ui.enter_pushButton.clicked.connect(self.login)

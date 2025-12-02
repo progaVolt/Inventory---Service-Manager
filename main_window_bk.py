@@ -6,6 +6,8 @@ from ui.main_window import Ui_MainWindow
 from db_bk import SessionLocal, init_db
 from models_bk import Part
 import csv
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 
 class MainWindow(QMainWindow):
@@ -48,6 +50,16 @@ class MainWindow(QMainWindow):
 
         self.load_from_db()
         self.update_stats()
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.ui.stats_plot_layout.addWidget(self.canvas)
+
+        # Привяжем кнопку "Построить" (или comboBox) к обновлению графика
+        self.ui.stats_button.clicked.connect(self.plot_stats)
+        self.ui.stats_combo.currentIndexChanged.connect(self.plot_stats)
+
+        # Построить сразу после загрузки
+        self.plot_stats()
 
     def change_theme(self):
         theme = self.ui.theme_combo.currentText()
@@ -122,7 +134,7 @@ class MainWindow(QMainWindow):
         if r != -1:
             self.ui.parts_table.removeRow(r)
         self.update_stats()
-        
+
     def add_photo(self):
         r = self.ui.parts_table.currentRow()
         if r == -1:
@@ -214,12 +226,12 @@ class MainWindow(QMainWindow):
 
         for r in range(rows):
             qty_item = self.ui.parts_table.item(r, 5)
-            price_item = self.ui.parts_table.item(r, 4)
+            prc_itm = self.ui.parts_table.item(r, 4)
 
-            if qty_item and price_item:
+            if qty_item and prc_itm:
                 try:
                     qty = int(qty_item.text())
-                    price = float(price_item.text())
+                    price = float(prc_itm.text())
                 except ValueError:
                     continue
 
@@ -232,6 +244,51 @@ class MainWindow(QMainWindow):
         self.ui.label_total_value.setText(f"{total_cost:.2f}")
         self.ui.label_avg_price.setText(f"{avg_price:.2f}")
 
+    def plot_stats(self):
+        self.figure.clear()
+
+        ax = self.figure.add_subplot(111)
+
+        graph_type = self.ui.stats_combo.currentText()
+        names = []
+        values = []
+
+        for r in range(self.ui.parts_table.rowCount()):
+            nm_itm = self.ui.parts_table.item(r, 2)
+            qty_item = self.ui.parts_table.item(r, 5)
+            prc_itm = self.ui.parts_table.item(r, 4)
+
+            if not (nm_itm and qty_item and prc_itm):
+                continue
+            try:
+                name = nm_itm.text()
+                qty = int(qty_item.text())
+                price = float(prc_itm.text())
+            except ValueError:
+                continue
+
+            names.append(name)
+            if graph_type == "Количество":
+                values.append(qty)
+            elif graph_type == "Цена":
+                values.append(price)
+            elif graph_type == "Стоимость (Цена×Количество)":
+                values.append(qty * price)
+
+        if not names:
+            QMessageBox.warning(self, "Ошибка", "Нет данных для графика.")
+            return
+
+        ax.bar(range(len(names)), values, color="#3498db")
+        ax.set_title(graph_type)
+        ax.set_ylabel(graph_type)
+        ax.set_xticks(range(len(names)))
+        ax.set_xticklabels(names, rotation=45, ha='right')
+        self.figure.tight_layout()
+        self.canvas.draw()
+
+        total = sum(values)
+        self.ui.stats_info.setText(f"Суммарное {graph_type}: {total}")
 
 
 if __name__ == "__main__":
